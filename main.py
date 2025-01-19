@@ -29,7 +29,7 @@ def main():
         "--attack_type", 
         type=str, 
         default="fgsm", 
-        choices=["fgsm", "iterative_fgsm"], 
+        choices=["fgsm", "iterative_fgsm", "cw"], 
         help="Type of attack")
     parser.add_argument(
         "--epsilon",
@@ -40,20 +40,25 @@ def main():
     parser.add_argument(
         "--alpha", 
         type=float, 
-        default=0.005, 
-        help="Step size for iterative attacks (default: 0.005)")
+        default=0.001, 
+        help="Step size for iterative attacks (default: 0.001)")
     parser.add_argument(
         "--num_iterations", 
         type=int, 
         default=10, 
         help="Number of iterations for iterative attacks")
+    parser.add_argument(
+        "--learning_rate", 
+        type=float, 
+        default=0.01, 
+        help="Learning rate for CW attack")
     
 
     args = parser.parse_args()
 
     try:
         # Initialize the adversarial image generator
-        generator = AdversarialImageGenerator(epsilon=args.epsilon, alpha=args.alpha, num_iterations=args.num_iterations)
+        generator = AdversarialImageGenerator(epsilon=args.epsilon, alpha=args.alpha, learning_rate=args.learning_rate, num_iterations=args.num_iterations)
 
         # Generate the adversarial image
         generator.generate(
