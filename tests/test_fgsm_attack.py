@@ -7,7 +7,7 @@ from adversarial_generator.utils.image_utils import preprocess_image
 from adversarial_generator.utils.model_utils import load_model
 
 
-def test_adversarial_image_generator():
+def test_fgsm_attack():
 
     input_image_path = 'data/ImageNet_samples/n02124075_Egyptian_cat.jpeg'
     output_image_path = 'output/Egyptian_cat_to_Tiger_cat.png'
@@ -21,6 +21,7 @@ def test_adversarial_image_generator():
     adv_tensor = generator.generate(
         image_path=input_image_path,
         target_class=target_class,
+        attack_type='fgsm',
         output_path=output_image_path,
     )
 
