@@ -26,22 +26,40 @@ def main():
         help="Target class index for the adversarial attack",
     )
     parser.add_argument(
+        "--attack_type", 
+        type=str, 
+        default="fgsm", 
+        choices=["fgsm", "iterative_fgsm"], 
+        help="Type of attack")
+    parser.add_argument(
         "--epsilon",
         type=float,
         default=0.01,
         help="Magnitude of the adversarial perturbation (default: 0.01)",
     )
+    parser.add_argument(
+        "--alpha", 
+        type=float, 
+        default=0.005, 
+        help="Step size for iterative attacks (default: 0.005)")
+    parser.add_argument(
+        "--num_iterations", 
+        type=int, 
+        default=10, 
+        help="Number of iterations for iterative attacks")
+    
 
     args = parser.parse_args()
 
     try:
         # Initialize the adversarial image generator
-        generator = AdversarialImageGenerator(epsilon=args.epsilon)
+        generator = AdversarialImageGenerator(epsilon=args.epsilon, alpha=args.alpha, num_iterations=args.num_iterations)
 
         # Generate the adversarial image
         generator.generate(
             image_path=args.input,
             target_class=args.target_class,
+            attack_type=args.attack_type,
             output_path=args.output
         )
         print(f"Adversarial image saved at: {args.output}")

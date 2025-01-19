@@ -4,9 +4,11 @@ from typing import Optional, Union
 from .utils.image_utils import preprocess_image, postprocess_image
 from .utils.model_utils import load_model
 from .attacks.fgsm import fgsm_attack
+from .attacks.iterative_fgsm import iterative_fgsm_attack
+
 
 class AdversarialImageGenerator:
-    def __init__(self, model_name: str = "resnet50", epsilon: float = 0.01):
+    def __init__(self, model_name: str = "resnet50", epsilon: float = 0.01, alpha: float = 0.005, num_iterations: int = 10):
         """
         Initialize the adversarial image generator.
         Args:
@@ -17,8 +19,10 @@ class AdversarialImageGenerator:
             raise ValueError("Epsilon must be a positive value between 0 and 1")
         self.model = load_model(model_name)
         self.epsilon = epsilon
+        self.alpha = alpha
+        self.num_iterations = num_iterations
 
-    def generate(self, image_path: str, target_class: int, output_path: Optional[str] = None) -> Union[Image.Image, None]:
+    def generate(self, image_path: str, target_class: int, attack_type: str = "fgsm", output_path: Optional[str] = None) -> Union[Image.Image, None]:
         """
         Generate an adversarial image.
         Args:
@@ -33,7 +37,12 @@ class AdversarialImageGenerator:
             input_tensor = preprocess_image(image_path)
 
             # Step 2: Generate the adversarial image tensor using FGSM
-            adv_tensor = fgsm_attack(self.model, input_tensor, target_class, self.epsilon)
+            if attack_type == 'fgsm':
+                adv_tensor = fgsm_attack(self.model, input_tensor, target_class, self.epsilon)
+            elif attack_type == 'iterative-fgsm':
+                adv_tensor = iterative_fgsm_attack(self.model, input_tensor, target_class, self.epsilon, self.alpha, self.num_iterations)
+            else:
+                raise ValueError(f"Unsupported attack type: {attack_type}")
 
             # Step 3: Postprocess the adversarial image tensor into a PIL image
             adv_image = postprocess_image(adv_tensor)
@@ -59,6 +68,9 @@ class AdversarialImageGenerator:
         Returns:
             int: Predicted class index.
         """
-        predicted_class = self.model(input_tensor).argmax(dim=1).item()
+        try:
+            predicted_class = self.model(input_tensor).argmax(dim=1).item()
+        except Exception as e:
+            raise RuntimeError(f"Failed to predict class : {e}")
         return predicted_class
         
