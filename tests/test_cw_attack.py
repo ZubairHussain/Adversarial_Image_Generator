@@ -6,21 +6,22 @@ from adversarial_generator.generator import AdversarialImageGenerator
 from adversarial_generator.utils.image_utils import preprocess_image
 
 
-def test_fgsm_attack():
+def test_cw_attack():
 
     input_image_path = 'data/ImageNet_samples/n02124075_Egyptian_cat.jpeg'
-    output_image_path = 'output/fgsm_attack.png'
-    target_class = 282 #  Tiger cat
-    epsilon = 0.05
+    output_image_path = 'output/CW_attack.png'
+    target_class = 282 
+    max_iter = 1000
+    learning_rate = 0.01
 
     # Initialize the generator
-    generator = AdversarialImageGenerator(model_name="resnet50", epsilon=epsilon)
+    generator = AdversarialImageGenerator(model_name="resnet50", learning_rate=learning_rate, num_iterations=max_iter)
 
     # Generate the adversarial image
     adv_tensor = generator.generate(
         image_path=input_image_path,
         target_class=target_class,
-        attack_type='fgsm',
+        attack_type='cw',
         output_path=output_image_path,
     )
 
