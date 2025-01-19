@@ -9,7 +9,7 @@ from adversarial_generator.utils.image_utils import preprocess_image
 def test_fgsm_attack():
 
     input_image_path = 'data/ImageNet_samples/n02124075_Egyptian_cat.jpeg'
-    output_image_path = 'output/Egyptian_cat_to_Tiger_cat.png'
+    output_image_path = 'output/iterative_fgsm_attack.png'
     target_class = 282 #  Tiger cat
     epsilon = 0.05
     alpha = 0.005
