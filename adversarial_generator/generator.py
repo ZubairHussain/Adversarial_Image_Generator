@@ -30,7 +30,7 @@ class AdversarialImageGenerator:
         """
         try:
             # Step 1: Preprocess the input image
-            input_tensor, _ = preprocess_image(image_path)
+            input_tensor = preprocess_image(image_path)
 
             # Step 2: Generate the adversarial image tensor using FGSM
             adv_tensor = fgsm_attack(self.model, input_tensor, target_class, self.epsilon)
@@ -50,3 +50,15 @@ class AdversarialImageGenerator:
             raise FileNotFoundError(f"Input image file not found at: {image_path}")
         except Exception as e:
             raise RuntimeError(f"Failed to generate adversarial image: {e}")
+        
+    def predict(self, input_tensor: torch.Tensor) -> int:
+        """
+        Predict the class for input tensor.
+        Args:
+            input_tensor (torch.Tensor): Input tensor
+        Returns:
+            int: Predicted class index.
+        """
+        predicted_class = self.model(input_tensor).argmax(dim=1).item()
+        return predicted_class
+        
