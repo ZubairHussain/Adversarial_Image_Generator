@@ -116,7 +116,7 @@ plt.show()
 ## Notes:
 
 1. The FGSM and iterative-FGSM attacks doesn't always generates adversarial noise that leads the model to misclassifying to the desired target class.
-2. C&W attack is more effective in generating adversarial noise that loads to the desired predicted target class but it is computationally very expensive.
+2. C&W attack is more effective in generating adversarial noise that leads to the desired predicted target class but it is computationally very expensive.
 3. For further improvements:
     1. Tune and optimized hyperparameters.
     2. Explore other effective adversarial attacks.
